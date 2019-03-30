@@ -8,59 +8,65 @@ public class MTax implements Constant {
         
     }
     
-    public static List<String> validate(List<X_Tax> xTaxList) {
+public static List<String> validateTax(List<XTax> xTaxList) {
         
         List<String> errorList = new ArrayList<>();
         
         if(xTaxList != null && xTaxList.size() > 0) {
             List<String> validIds = new ArrayList<>();
-            int cont = 0;
+            boolean flagAllLocalTax = true;
 			
-            for (X_Tax tax : xTaxList) {
+            for (XTax tax : xTaxList) {
                 
 				if(tax.getId() != null){
                     validIds.add(tax.getId().toString());
                 }
 
                 if(tax.getTax() == null) {
-                    errorList.add("El impuesto es obligatorio");
+                    errorList.add("El impuesto es obligatorio, id: " + tax.getId());
                 }
                 
                 if(!tax.isLocal()){
-                    cont++;
+                	flagAllLocalTax = false;
                 }
             }
             
-			if(cont<=0){
+			if(flagAllLocalTax){
                 errorList.add("Debe de incluir al menos una tasa no local");
             }
             
-			if(validIds.size() > 0){
-                    
-                    List<X_Tax> xt = TaxsByListId(validIds, false);
-                    
-					if(xt.size() != validIds.size()){
-						errorList.add("Existen datos no guardados previamente");
-					}else{
-						
-                        HashMap<String, X_Tax> map_taxs = new HashMap<String, X_Tax>();
-                        
-						for(X_Tax tax: xt){
-                            map_taxs.put(tax.getId().toString(), tax);
-                        }
-						
-                        for(int i = 0; i < xTaxList.size(); i++){
-                            
-							if(xTaxList.get(i).getId() != null){
-                               xTaxList.get(i).setCreated(
-							   map_taxs.get(xTaxList.get(i).getId().toString()).getCreated());
-                            }
-                        }
-                    }
-            }
+			if(validIds.size() > 0 && flagAllLocalTax == false){
+				
+				setTaxsValidated(validIds, errorList, xTaxList);         
+
+			}
+                
         }
         
         return errorList;
+        
     }
+        
+        
+    protected static void setTaxsValidated(List<String> validIds, List<String> errorList, List<XTax> xTaxList) {
+    	
+		List<XTax> xTaxsValidated = TaxsByListId(validIds, false);
+		
+		if (xTaxsValidated.size() != validIds.size()) {
+			errorList.add("Existen datos no guardados previamente");
+		} else {
+			HashMap<String, Date> mapTaxs = new HashMap<>();
+
+			for (XTax tax : xTaxsValidated) {
+				mapTaxs.put(tax.getId().toString(), tax.getCreated());
+			}
+
+			for (int i = 0; i < xTaxList.size(); i++) {
+				if (xTaxList.get(i).getId() != null) {
+					xTaxList.get(i).setCreated(mapTaxs.get(xTaxList.get(i).getId().toString()));
+				}
+			}
+		}
+	}
     
 }
