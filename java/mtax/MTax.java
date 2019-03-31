@@ -20,10 +20,12 @@ public static List<String> validateTax(List<XTax> xTaxList) {
                 
 				if(tax.getId() != null){
                     validIds.add(tax.getId().toString());
+                }else {
+                	errorList.add("El id no puede ser nulo"):
                 }
 
                 if(tax.getTax() == null) {
-                    errorList.add("El impuesto es obligatorio, id: " + tax.getId());
+                    errorList.add("El impuesto es obligatorio");
                 }
                 
                 if(!tax.isLocal()){
@@ -52,21 +54,17 @@ public static List<String> validateTax(List<XTax> xTaxList) {
     	
 		List<XTax> xTaxsValidated = TaxsByListId(validIds, false);
 		
-		if (xTaxsValidated.size() != validIds.size()) {
-			errorList.add("Existen datos no guardados previamente");
-		} else {
-			HashMap<String, Date> mapTaxs = new HashMap<>();
+		HashMap<String, Date> mapTaxs = new HashMap<>();
 
-			for (XTax tax : xTaxsValidated) {
-				mapTaxs.put(tax.getId().toString(), tax.getCreated());
-			}
-
-			for (int i = 0; i < xTaxList.size(); i++) {
-				if (xTaxList.get(i).getId() != null) {
-					xTaxList.get(i).setCreated(mapTaxs.get(xTaxList.get(i).getId().toString()));
-				}
-			}
+		for (XTax tax : xTaxsValidated) {
+			mapTaxs.put(tax.getId().toString(), tax.getCreated());
 		}
+
+		for (XTax tax : xTaxList) {
+			xTaxList.setCreated(mapTaxs.get(xTaxList.getId().toString()));
+			}
+			
+		}		
 		
 		return errorList;
 	}

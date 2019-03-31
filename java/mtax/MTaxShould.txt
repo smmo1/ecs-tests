@@ -62,7 +62,7 @@ public class MTaxShould {
 		
 		xTax2.setId("2");
 		xTax2.setLocal(true);
-		xTax2.setTax("");
+		xTax2.setTax();
 		assertEquals("El impuesto es obligatorio", mTax.validateTax(xTaxList));
 		
 	}		
