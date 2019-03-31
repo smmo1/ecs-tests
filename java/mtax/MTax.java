@@ -37,7 +37,7 @@ public static List<String> validateTax(List<XTax> xTaxList) {
             
 			if(validIds.size() > 0 && flagAllLocalTax == false){
 				
-				setTaxsValidated(validIds, errorList, xTaxList);         
+				errorList = setTaxsValidated(validIds, errorList, xTaxList);         
 
 			}
                 
@@ -48,7 +48,7 @@ public static List<String> validateTax(List<XTax> xTaxList) {
     }
         
         
-    protected static void setTaxsValidated(List<String> validIds, List<String> errorList, List<XTax> xTaxList) {
+    protected static List<String> setTaxsValidated(List<String> validIds, List<String> errorList, List<XTax> xTaxList) {
     	
 		List<XTax> xTaxsValidated = TaxsByListId(validIds, false);
 		
@@ -67,6 +67,8 @@ public static List<String> validateTax(List<XTax> xTaxList) {
 				}
 			}
 		}
+		
+		return errorList;
 	}
     
 }

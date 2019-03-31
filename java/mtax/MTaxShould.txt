@@ -1,0 +1,70 @@
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import java.util.List;
+
+public class MTaxShould {
+	
+	@Before
+	public void setup() {
+				
+		List<XTax> xTaxList = new List<XTax>();			
+		Xtax tax1 = new XTax<>;
+		Xtax tax2 = new XTax<>;		
+		MTax mTax = new Mtax();
+	}
+	
+		
+	@Test
+	public void invalidTax_when_no_has_id(){
+				
+		xTax1.setId("1");
+		xTax1.setLocal(false);
+		xTax1.setTax("Tax");
+
+		xTaxList.add(xTax1);
+		
+		xTax2.setId("");
+		xTax2.setLocal(false);
+		xTax2.setTax("Tax");
+
+		xTaxList.add(xTax2);
+				
+		assertEquals("El id no puede ser nulo", mTax.validateTax(xTaxList));
+		
+	}
+	
+	@Test
+	public void invalidTaxList_when_noinclude_a_one_nonLocalTax(){	
+					
+		xTax1.setId("1");
+		xTax1.setLocal(true);
+		xTax1.setTax("Tax");
+
+		xTaxList.add(xTax1);
+		
+		xTax2.setId("2");
+		xTax2.setLocal(true);
+		xTax2.setTax("Tax");
+		assertEquals("Debe de incluir al menos una tasa no local", mTax.validateTax(xTaxList));
+		
+	}
+	
+	@Test
+	public void invalidTax_when_tax_is_null(){
+				
+		xTax1.setId("1");
+		xTax1.setLocal(false);
+		xTax1.setTax("Tax");
+
+		xTaxList.add(xTax1);
+		
+		xTax2.setId("2");
+		xTax2.setLocal(true);
+		xTax2.setTax("");
+		assertEquals("El impuesto es obligatorio", mTax.validateTax(xTaxList));
+		
+	}		
+
+}
